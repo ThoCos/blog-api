@@ -1,7 +1,6 @@
 import { useStorage } from '#imports';
 import Fuse from 'fuse.js';
 
-import { Personnes } from './types';
 export default defineEventHandler(async (event) => {
   const query = await getQuery(event);
   const q = query.q;
@@ -10,16 +9,14 @@ export default defineEventHandler(async (event) => {
     return new Error('q get param is required');
   }
 
-  const personnes: Personnes = await useStorage('assets:server').getItem(
-    `db/personnes.json`
-  );
+  const article = await useStorage('assets:server').getItem(`db/article.json`);
 
   const options = {
     includeScore: true,
-    keys: ['prenom', 'nom', 'description'],
+    keys: ['titre', 'texte'],
   };
 
-  const fuse = new Fuse(personnes, options);
+  const fuse = new Fuse(article, options);
 
   const results = fuse.search(q);
 
